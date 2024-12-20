@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Direct Supabase Example (UNSAFE)</title>
+</head>
+<body>
+    <form id="myForm">
+        <input type="email" id="email" placeholder="Email"><br>
+        <input type="password" id="password" placeholder="Password"><br>
+        <button type="submit">Submit</button>
+        <div id="message"></div>
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://xvkttfaonufaphgovbia.supabase.co'; // Replace with your Supabase URL
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3R0ZmFvbnVmYXBoZ292YmlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ3MTc0NDUsImV4cCI6MjA1MDI5MzQ0NX0.3InFicUiDACm3bET4fSdy-5_h38-8XpQpd52BrYoV0g'; // Replace with your Supabase anon key
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        document.getElementById('myForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const messageDiv = document.getElementById('message');
+
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                });
+
+                if (error) {
+                    console.error("Supabase error:", error);
+                    messageDiv.textContent = error.message;
+                } else {
+                    console.log("Signup successful:", data);
+                    messageDiv.textContent = "Signup successful!";
+                    document.getElementById('myForm').reset();
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                messageDiv.textContent = "An error occurred.";
+            }
+        });
+    </script>
+</body>
+</html>
