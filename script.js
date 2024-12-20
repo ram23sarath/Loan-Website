@@ -1,33 +1,88 @@
-// script.js
-document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent form from actually submitting
+import { createClient } from '@supabase/supabase-js'
 
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const errorMessage = document.getElementById('error-message');
+const SUPABASE_URL = 'https://xvkttfaonufaphgovbia.supabase.co'; 
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3R0ZmFvbnVmYXBoZ292YmlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ3MTc0NDUsImV4cCI6MjA1MDI5MzQ0NX0.3InFicUiDACm3bET4fSdy-5_h38-8XpQpd52BrYoV0gY'; 
 
-    errorMessage.textContent = ""; // Clear any previous error messages
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    if (username.trim() === "" || password.trim() === "") {
-        errorMessage.textContent = "Please fill in all fields.";
-        return;
+// Get elements based on current page
+let signupForm, loginForm, protectedContent, logoutButton, userInfoDiv, signupMessage, loginMessage;
+
+if (window.location.pathname.endsWith("index.html") || window.location.pathname === "/") {
+    loginForm = document.getElementById('login-form');
+    protectedContent = document.getElementById('protected-content');
+    logoutButton = document.getElementById('logout-button');
+    userInfoDiv = document.getElementById('user-info');
+    loginMessage = document.getElementById('login-message');
+
+} else if (window.location.pathname.endsWith("signup.html")) {
+    signupForm = document.getElementById('signup-form');
+    signupMessage = document.getElementById('signup-message');
+}
+
+async function checkAuth() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user && (window.location.pathname.endsWith("index.html") || window.location.pathname === "/")) {
+        showProtectedContent(user);
+    } else if (!user && (window.location.pathname.endsWith("index.html") || window.location.pathname === "/")) {
+        showAuthForms();
     }
+}
 
-    // Basic client-side validation (Example)
-    if (username.length < 3) {
-      errorMessage.textContent = "Username must be at least 3 characters.";
-      return;
-    }
+function showProtectedContent(user) {
+    protectedContent.style.display = 'block';
+    document.getElementById('login-form').style.display = 'none';
+    userInfoDiv.innerHTML = `<p>User ID: ${user.id}</p><p>Email: ${user.email}</p>`;
+}
 
-    if (password.length < 6) {
-        errorMessage.textContent = "Password must be at least 6 characters.";
-        return;
-    }
+function showAuthForms() {
+    protectedContent.style.display = 'none';
+    document.getElementById('login-form').style.display = 'block';
+}
 
+if (signupForm) {
+    signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        signupMessage.textContent = "";
 
-    // Here you would typically send the data to a server for authentication
-    // using fetch or AJAX. For this example, we'll just show an alert.
-    alert("Login successful (Simulated). Username: " + username);
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
 
-    document.getElementById('loginForm').reset();
-});
+        const { data, error } = await supabase.auth.signUp({ email, password });
+
+        if (error) {
+            signupMessage.textContent = error.message;
+        } else {
+            signupMessage.textContent = "Sign up successful!";
+            signupMessage.classList.add('success');
+            signupForm.reset();
+        }
+    });
+}
+
+if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        loginMessage.textContent = "";
+
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+        if (error) {
+            loginMessage.textContent = error.message;
+        } else {
+            checkAuth();
+        }
+    });
+}
+
+if (logoutButton) {
+    logoutButton.addEventListener('click', async () => {
+        await supabase.auth.signOut();
+        showAuthForms();
+    });
+}
+
+checkAuth();
