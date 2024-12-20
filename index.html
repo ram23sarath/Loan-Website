@@ -1,27 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Supabase Login</title>
+    <title>Supabase Sign Up</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Supabase Login</h1>
-        <div id="login-form">
-            <h2>Log In</h2>
-            <input type="email" id="login-email" placeholder="Email" required>
-            <input type="password" id="login-password" placeholder="Password" required>
-            <button id="login-button">Log In</button>
-            <div id="login-message" class="message"></div>
-            <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
-        </div>
-
-        <div id="protected-content" style="display: none;">
-            <h2>Protected Content</h2>
-            <p>Welcome! You are now logged in.</p>
-            <button id="logout-button">Log Out</button>
-            <div id="user-info"></div>
+        <h1>Supabase Sign Up</h1>
+        <div id="signup-form">
+            <h2>Sign Up</h2>
+            <form id="signup-form-element">
+                <input type="email" id="signup-email" placeholder="Email" required>
+                <input type="password" id="signup-password" placeholder="Password" required>
+                <button type="submit" id="signup-button">Sign Up</button>
+            </form>
+            <div id="signup-message" class="message"></div>
+            <p>Already have an account? <a href="index.html">Log In</a></p>
         </div>
     </div>
     <script src="script.js"></script>
