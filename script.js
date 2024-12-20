@@ -8,18 +8,22 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // Get elements based on current page
 let signupForm, loginForm, protectedContent, logoutButton, userInfoDiv, signupMessage, loginMessage;
 
-if (window.location.pathname.endsWith("signup.html")) {
-    signupForm = document.getElementById('signup-form-element');
-    signupMessage = document.getElementById('signup-message');
-}
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.location.pathname.endsWith("signup.html")) {
+        signupForm = document.getElementById('signup-form-element');
+        signupMessage = document.getElementById('signup-message');
+    }
 
-if (window.location.pathname.endsWith("index.html") || window.location.pathname === "/") {
-    loginForm = document.getElementById('login-form');
-    protectedContent = document.getElementById('protected-content');
-    logoutButton = document.getElementById('logout-button');
-    userInfoDiv = document.getElementById('user-info');
-    loginMessage = document.getElementById('login-message');
-}
+    if (window.location.pathname.endsWith("index.html") || window.location.pathname === "/") {
+        loginForm = document.getElementById('login-form');
+        protectedContent = document.getElementById('protected-content');
+        logoutButton = document.getElementById('logout-button');
+        userInfoDiv = document.getElementById('user-info');
+        loginMessage = document.getElementById('login-message');
+    }
+
+    checkAuth();
+});
 
 async function checkAuth() {
     const { data: { user } } = await supabase.auth.getUser();
@@ -90,5 +94,3 @@ if (logoutButton) {
         showAuthForms();
     });
 }
-
-checkAuth();
