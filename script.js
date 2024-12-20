@@ -14,7 +14,6 @@ if (window.location.pathname.endsWith("index.html") || window.location.pathname 
     logoutButton = document.getElementById('logout-button');
     userInfoDiv = document.getElementById('user-info');
     loginMessage = document.getElementById('login-message');
-
 } else if (window.location.pathname.endsWith("signup.html")) {
     signupForm = document.getElementById('signup-form');
     signupMessage = document.getElementById('signup-message');
@@ -56,6 +55,11 @@ if (signupForm) {
             signupMessage.textContent = "Sign up successful!";
             signupMessage.classList.add('success');
             signupForm.reset();
+
+            // Redirect after successful signup
+            setTimeout(() => {
+                window.location.href = 'index.html'; // Redirect to login page
+            }, 1500);
         }
     });
 }
